@@ -3,7 +3,10 @@ import algoliasearch from 'algoliasearch';
 import StoryblokClient from 'storyblok-js-client';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default function handler(
+  req: NextApiRequest,
+  response: NextApiResponse
+) {
   const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID;
   const ALGOLIA_API_ADMIN_TOKEN = process.env.ALGOLIA_API_ADMIN_TOKEN;
   const ALGOLIA_INDEX_NAME = process.env.ALGOLIA_INDEX_NAME;
@@ -46,6 +49,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             records.forEach(record => {
               record.objectID = record.uuid;
             });
+            response.status(200).json(records);
             await index
               .saveObjects(records)
               .wait()
@@ -56,5 +60,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         .catch(e => console.log(e));
     })
     .catch(e => console.log(e));
-  res.status(200).json({});
+  return;
 }
