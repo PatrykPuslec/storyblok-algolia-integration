@@ -2,6 +2,7 @@ import axios from 'axios';
 import algoliasearch from 'algoliasearch';
 import StoryblokClient from 'storyblok-js-client';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { mapStoryblokItems } from '../../utils/mapStoryblokItems';
 
 export default function handler(
   req: NextApiRequest,
@@ -46,12 +47,10 @@ export default function handler(
               let data = response.data;
               records = records.concat(data.stories);
             });
-            records.forEach(record => {
-              record.objectID = record.uuid;
-            });
+            const mappedResponse = mapStoryblokItems(records);
             response.status(200).json(records);
             await index
-              .saveObjects(records)
+              .saveObjects(mappedResponse)
               .wait()
               .catch(e => console.log(e));
             console.log('Indexed: ' + records.length);
