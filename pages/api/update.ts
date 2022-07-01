@@ -1,8 +1,9 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import axios from 'axios';
 import algoliasearch from 'algoliasearch';
 import StoryblokClient from 'storyblok-js-client';
-export default function handler(req, res) {
+import { NextApiRequest, NextApiResponse } from 'next';
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID;
   const ALGOLIA_API_ADMIN_TOKEN = process.env.ALGOLIA_API_ADMIN_TOKEN;
   const ALGOLIA_INDEX_NAME = process.env.ALGOLIA_INDEX_NAME;
@@ -13,7 +14,6 @@ export default function handler(req, res) {
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
   });
-
   const options = {
     per_page: 100,
     page: 1,
@@ -46,17 +46,15 @@ export default function handler(req, res) {
             records.forEach(record => {
               record.objectID = record.uuid;
             });
-
             await index
               .saveObjects(records)
               .wait()
               .catch(e => console.log(e));
-            console.log('Indexed' + records.length);
+            console.log('Indexed: ' + records.length);
           })
         )
         .catch(e => console.log(e));
     })
     .catch(e => console.log(e));
-
-  res.status(200).json({ records: records });
+  res.status(200).json({});
 }
