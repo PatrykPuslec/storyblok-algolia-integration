@@ -1,6 +1,6 @@
 import axios from 'axios';
 import algoliasearch from 'algoliasearch';
-import StoryblokClient from 'storyblok-js-client';
+import StoryblokClient, { StoriesParams } from 'storyblok-js-client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { mapStoryblokItems } from '../../utils/mapStoryblokItems';
 
@@ -8,6 +8,8 @@ export default function handler(
   req: NextApiRequest,
   response: NextApiResponse
 ) {
+  const apiBody: StoryblokEventPayload = req.body;
+  const updatedStoriesIds = apiBody.storyId;
   const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID;
   const ALGOLIA_API_ADMIN_TOKEN = process.env.ALGOLIA_API_ADMIN_TOKEN;
   const ALGOLIA_INDEX_NAME = process.env.ALGOLIA_INDEX_NAME;
@@ -18,14 +20,14 @@ export default function handler(
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
   });
-  const options = {
+  const options: StoriesParams = {
     per_page: 100,
-    page: 1,
+    page: '1',
   };
   let records = [];
 
   storyblok
-    .get(`cdn/stories/`, options)
+    .get(`cdn/stories/${apiBody.storyId}`, options)
     .then(async res => {
       const total = res.headers.total;
       const maxPage = Math.ceil(total / options.per_page);
