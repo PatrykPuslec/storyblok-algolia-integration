@@ -20,11 +20,15 @@ export default function handler(
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
   });
-  const options: StoriesParams = {};
+  console.log(apiBody);
+  const options: StoriesParams = {
+    per_page: 100,
+    page: '1',
+  };
   let records = [];
 
   storyblok
-    .get(`cdn/stories/${apiBody.storyId}`, options)
+    .get(`cdn/stories/`, options)
     .then(async res => {
       const total = res.headers.total;
       const maxPage = Math.ceil(total / options.per_page);
