@@ -8,7 +8,7 @@ export default function handler(
   req: NextApiRequest,
   response: NextApiResponse
 ) {
-  const apiBody: StoryblokEventPayload = req.body;
+  const apiBody = req.body;
   const updatedStoriesIds = apiBody.storyId;
   const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID;
   const ALGOLIA_API_ADMIN_TOKEN = process.env.ALGOLIA_API_ADMIN_TOKEN;
@@ -20,7 +20,6 @@ export default function handler(
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
   });
-  console.log(apiBody);
   const options: StoriesParams = {
     per_page: 100,
     page: '1',
@@ -28,7 +27,7 @@ export default function handler(
   let records = [];
 
   storyblok
-    .get(`cdn/stories/`, options)
+    .get(`cdn/stories/${apiBody.story_id}`, options)
     .then(async res => {
       const total = res.headers.total;
       const maxPage = Math.ceil(total / options.per_page);
