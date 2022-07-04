@@ -20,10 +20,7 @@ export default function handler(
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
   });
-  const options: StoriesParams = {
-    per_page: 100,
-    page: '1',
-  };
+  const options: StoriesParams = {};
   let records = [];
 
   storyblok
