@@ -9,7 +9,6 @@ export default function handler(
   response: NextApiResponse
 ) {
   const apiBody = req.body;
-  const updatedStoriesIds = apiBody.storyId;
   const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID;
   const ALGOLIA_API_ADMIN_TOKEN = process.env.ALGOLIA_API_ADMIN_TOKEN;
   const ALGOLIA_INDEX_NAME = process.env.ALGOLIA_INDEX_NAME;
@@ -20,10 +19,7 @@ export default function handler(
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
   });
-  const options: StoriesParams = {
-    per_page: 100,
-    page: '1',
-  };
+  const options: StoriesParams = {};
   let records = [];
 
   storyblok
