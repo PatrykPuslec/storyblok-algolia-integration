@@ -29,8 +29,9 @@ export default function handler(
       response.status(200).json(res.data.story);
       const mappedResponse = mapStoryblokItem(res.data.story);
       if (storyblokReqData) {
+        console.log('has reqdata');
         if (storyblokReqData.action === 'published') {
-          console.log('im in');
+          console.log('has action published');
           await index
             .saveObject(mappedResponse)
             .wait()
