@@ -32,6 +32,10 @@ export default function handler(
           await index
             .saveObject(mappedResponse)
             .wait()
+            .then(res => {
+              console.log(res);
+              console.log('saved');
+            })
             .catch(e => console.log(e));
         } else {
           await index
