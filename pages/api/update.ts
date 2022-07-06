@@ -22,16 +22,13 @@ export default function handler(
 
   const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
 
-  console.log(storyblokReqData);
   storyblok
-    .get(`cdn/stories/157821025`)
+    .get(`cdn/stories/${storyblokReqData.story_id}`)
     .then(async res => {
       response.status(200).json(res.data.story);
       const mappedResponse = mapStoryblokItem(res.data.story);
       if (storyblokReqData) {
-        console.log('has reqdata');
         if (storyblokReqData.action === 'published') {
-          console.log('has action published');
           await index
             .saveObject(mappedResponse)
             .wait()
@@ -42,8 +39,6 @@ export default function handler(
             .wait()
             .catch(e => console.log(e));
         }
-      } else {
-        response.status(400);
       }
     })
     .catch(e => {
