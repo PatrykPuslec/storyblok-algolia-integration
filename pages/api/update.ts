@@ -30,6 +30,7 @@ export default function handler(
       const mappedResponse = mapStoryblokItem(res.data.story);
       if (storyblokReqData) {
         if (storyblokReqData.action === 'published') {
+          console.log('im in');
           await index
             .saveObject(mappedResponse)
             .wait()
