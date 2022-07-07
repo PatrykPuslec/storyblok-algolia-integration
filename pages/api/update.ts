@@ -14,37 +14,23 @@ export default function handler(
   const ALGOLIA_INDEX_NAME = process.env.ALGOLIA_INDEX_NAME;
   const STORYBLOK_CONTENT_DELIVERY_API_TOKEN =
     process.env.STORYBLOK_CONTENT_DELIVERY_API_TOKEN;
-
   const algolia = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_ADMIN_TOKEN);
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
   });
   response.status(200).json({});
-  const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
-  storyblok
-    .get(`cdn/stories`)
-    .then(async res => {
-      console.log('in');
-      const mappedResponse = mapStoryblokItem(res.data.stories[0]);
-      console.log(mappedResponse);
-      if (storyblokReqData) {
-        if (storyblokReqData.action === 'published') {
-          await index
-            .saveObject(mappedResponse)
-            .wait()
-            .catch(e => console.log(e));
-        } else {
-          await index
-            .deleteObject(storyblokReqData.story_id.toString())
-            .wait()
-            .catch(e => console.log(e.message));
-        }
-      }
-    })
-    .catch(e => {
-      console.log(e);
-      console.log('failed');
-    });
 
+  storyblok
+    .getStory(storyblokReqData.toString())
+    .then(res => {
+      const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
+      const mappedItem = mapStoryblokItem(res.data.story);
+      index
+        .saveObject(mappedItem)
+        .wait()
+        .catch(e => console.log(e));
+      console.log('saved');
+    })
+    .catch(e => console.log(e));
   return;
 }
