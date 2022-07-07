@@ -4,7 +4,7 @@ import StoryblokClient, { StoriesParams } from 'storyblok-js-client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { mapStoryblokItems } from '../../utils/mapStoryblokItems';
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   response: NextApiResponse
 ) {
@@ -20,15 +20,14 @@ export default function handler(
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
   });
-  console.log(apiBody);
   const options: StoriesParams = {
     per_page: 100,
     page: '1',
   };
   let records = [];
 
-  storyblok
-    .get(`cdn/stories?_vercel_no_cache=1`, options)
+  await storyblok
+    .get(`cdn/stories`, options)
     .then(async res => {
       const total = res.headers.total;
       const maxPage = Math.ceil(total / options.per_page);
