@@ -21,12 +21,12 @@ export default function handler(
   });
   response.status(200).json({});
   const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
-  console.log(storyblok);
   storyblok
-    .get(`cdn/stories/160141122`)
+    .get(`cdn/stories`)
     .then(async res => {
       console.log('in');
-      const mappedResponse = mapStoryblokItem(res.data.story);
+      const mappedResponse = mapStoryblokItem(res.data.stories[0]);
+      console.log(mappedResponse);
       if (storyblokReqData) {
         if (storyblokReqData.action === 'published') {
           await index
