@@ -1,15 +1,15 @@
-import axios from 'axios';
 import algoliasearch from 'algoliasearch';
-import StoryblokClient, { StoriesParams } from 'storyblok-js-client';
+import StoryblokClient from 'storyblok-js-client';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { mapStoryblokItems } from '../../utils/mapStoryblokItems';
+import { mapStoryblokItem } from '../../utils/mapStoryblokItems';
+import { StoryblokPayload } from '../../utils/storyblokTypes';
 
 export default async function handler(
   req: NextApiRequest,
   response: NextApiResponse
 ) {
-  const apiBody: StoryblokEventPayload = req.body;
-  const updatedStoriesIds = apiBody.storyId;
+  const storyblokReqData: StoryblokPayload = req.body;
+
   const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID;
   const ALGOLIA_API_ADMIN_TOKEN = process.env.ALGOLIA_API_ADMIN_TOKEN;
   const ALGOLIA_INDEX_NAME = process.env.ALGOLIA_INDEX_NAME;
@@ -19,47 +19,28 @@ export default async function handler(
   const algolia = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_ADMIN_TOKEN);
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
+    cache: {
+      clear: 'auto',
+      type: 'memory',
+    },
   });
-  const options: StoriesParams = {
-    per_page: 100,
-    page: '1',
-  };
-  let records = [];
 
-  await storyblok
-    .get(`cdn/stories`, options)
-    .then(async res => {
-      const total = res.headers.total;
-      const maxPage = Math.ceil(total / options.per_page);
-
-      let contentRequests = [];
-      for (let page = 1; page <= maxPage; page++) {
-        contentRequests.push(
-          storyblok.get(`cdn/stories`, { ...options, page })
-        );
-      }
-
-      const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
-
-      axios
-        .all(contentRequests)
-        .then(
-          axios.spread(async (...responses) => {
-            responses.forEach(response => {
-              let data = response.data;
-              records = records.concat(data.stories);
-            });
-            const mappedResponse = mapStoryblokItems(records);
-            response.status(200).json(records);
-            await index
-              .saveObjects(mappedResponse)
-              .wait()
-              .catch(e => console.log(e));
-            console.log('Indexed: ' + records.length);
-          })
-        )
-        .catch(e => console.log(e));
-    })
-    .catch(e => console.log(e));
-  return;
+  try {
+    await storyblok
+      .getStory(storyblokReqData.story_id.toString())
+      .then(res => {
+        const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
+        const mappedItem = mapStoryblokItem(res.data.story);
+        index
+          .saveObject(mappedItem)
+          .wait()
+          .catch(e => console.log(e));
+        console.log('saved');
+      })
+      .catch(e => console.log(e));
+  } catch (err) {
+    console.error(err);
+    response.status(400).json({});
+  }
+  response.status(200).json({});
 }
