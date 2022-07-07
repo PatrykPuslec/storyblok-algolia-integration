@@ -20,11 +20,10 @@ export default function handler(
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
   });
   response.status(200).json({});
-  console.log(storyblokReqData.story_id);
   const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
 
   storyblok
-    .get(`cdn/stories/${storyblokReqData.story_id}`)
+    .get(`cdn/stories/160141122`)
     .then(async res => {
       console.log('in');
       const mappedResponse = mapStoryblokItem(res.data.story);
