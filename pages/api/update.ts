@@ -24,13 +24,14 @@ export default async function handler(
       type: 'memory',
     },
   });
-
+  console.log('yay');
   try {
     await storyblok
       .getStory(storyblokReqData.story_id.toString())
       .then(res => {
         const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
         const mappedItem = mapStoryblokItem(res.data.story);
+        console.log(mappedItem);
         index
           .saveObject(mappedItem)
           .wait()
