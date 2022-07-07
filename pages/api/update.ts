@@ -25,8 +25,6 @@ export default function handler(
     },
   });
 
-  response.status(200).json({});
-
   try {
     storyblok
       .getStory(storyblokReqData.story_id.toString())
