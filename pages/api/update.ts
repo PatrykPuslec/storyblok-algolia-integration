@@ -23,9 +23,9 @@ export default function handler(
   const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
 
   storyblok
-    .get(`cdn/stories/${storyblokReqData.story_id.toString()}`)
+    .get(`cdn/stories/${storyblokReqData.story_id}`)
     .then(async res => {
-      console.log(storyblokReqData);
+      console.log(res.data);
       const mappedResponse = mapStoryblokItem(res.data.story);
       console.log(mappedResponse);
       if (storyblokReqData) {
