@@ -21,7 +21,7 @@ export default function handler(
   });
 
   const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
-  console.log(req.body);
+  console.log(storyblokReqData);
   storyblok
     .get(`cdn/stories/${storyblokReqData.story_id}`)
     .then(async res => {
