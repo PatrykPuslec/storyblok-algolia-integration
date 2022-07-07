@@ -21,13 +21,11 @@ export default function handler(
   });
 
   const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
-
+  console.log(req.body);
   storyblok
     .get(`cdn/stories/${storyblokReqData.story_id}`)
     .then(async res => {
       const mappedResponse = mapStoryblokItem(res.data.story);
-      console.log(mappedResponse);
-      console.log('-------------');
       await index
         .saveObject(mappedResponse)
         .wait()
