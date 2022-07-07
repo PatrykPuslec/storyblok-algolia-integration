@@ -31,7 +31,6 @@ export default async function handler(
         if (res.data.story.content?.component === 'page') {
           const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
           const mappedItem = mapStoryblokItem(res.data.story);
-          response.status(200).json(res.data.story);
           index
             .saveObject(mappedItem)
             .wait()
@@ -44,4 +43,5 @@ export default async function handler(
     console.error(err);
     response.status(400).json({});
   }
+  response.status(200).json({});
 }
