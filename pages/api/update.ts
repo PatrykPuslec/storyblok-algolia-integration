@@ -37,11 +37,14 @@ export default function handler(
           await index
             .deleteObject(storyblokReqData.story_id.toString())
             .wait()
-            .catch(e => console.log(e));
+            .catch(e => console.log(e.message));
         }
       }
     })
-    .catch(e => console.log(e));
+    .catch(e => {
+      console.log(e);
+      console.log('failed');
+    });
 
   return;
 }
