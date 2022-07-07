@@ -28,7 +28,7 @@ export default function handler(
   let records = [];
 
   storyblok
-    .get(`cdn/stories/`, options)
+    .get(`cdn/stories?_vercel_no_cache=1`, options)
     .then(async res => {
       const total = res.headers.total;
       const maxPage = Math.ceil(total / options.per_page);
