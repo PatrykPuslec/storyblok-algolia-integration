@@ -19,8 +19,10 @@ export default function handler(
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
   });
+  response.status(200).json({});
 
   const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
+
   console.log(storyblokReqData);
   storyblok
     .get(`cdn/stories/${storyblokReqData.story_id}`)
@@ -42,10 +44,7 @@ export default function handler(
         }
       }
     })
-    .catch(e => {
-      console.log(e);
-      response.status(400);
-    });
-  response.status(200).json({});
+    .catch(e => console.log(e));
+
   return;
 }
