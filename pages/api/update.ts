@@ -9,18 +9,23 @@ export default function handler(
   response: NextApiResponse
 ) {
   const storyblokReqData: StoryblokPayload = req.body;
-  const ALGOLIA_APP_ID = 'Z2C0Z8M1C9';
-  const ALGOLIA_API_ADMIN_TOKEN = '6f09b7d1a0f2a82ecbf05211e2a38dad';
-  const ALGOLIA_INDEX_NAME = 'dev_TREF_test';
-  const STORYBLOK_CONTENT_DELIVERY_API_TOKEN = 'sS7XtfFCIYaZxsFvGZor0gtt';
+  const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID;
+  const ALGOLIA_API_ADMIN_TOKEN = process.env.ALGOLIA_API_ADMIN_TOKEN;
+  const ALGOLIA_INDEX_NAME = process.env.ALGOLIA_INDEX_NAME;
+  const STORYBLOK_CONTENT_DELIVERY_API_TOKEN =
+    process.env.STORYBLOK_CONTENT_DELIVERY_API_TOKEN;
   const algolia = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_ADMIN_TOKEN);
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
+    cache: {
+      clear: 'auto',
+      type: 'memory',
+    },
   });
   response.status(200).json({});
 
   storyblok
-    .getStory(storyblokReqData.toString())
+    .getStory(storyblokReqData.story_id.toString())
     .then(res => {
       const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
       const mappedItem = mapStoryblokItem(res.data.story);
