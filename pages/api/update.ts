@@ -21,15 +21,13 @@ export default function handler(
   });
 
   const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
-  console.log(storyblokReqData);
+
   storyblok
-    .get(`cdn/stories/${storyblokReqData.story_id}`)
+    .get(`cdn/stories/${storyblokReqData.story_id.toString()}`)
     .then(async res => {
+      console.log(storyblokReqData);
       const mappedResponse = mapStoryblokItem(res.data.story);
-      await index
-        .saveObject(mappedResponse)
-        .wait()
-        .catch(e => console.log(e));
+      console.log(mappedResponse);
       if (storyblokReqData) {
         if (storyblokReqData.action === 'published') {
           await index
