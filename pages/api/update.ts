@@ -24,24 +24,24 @@ export default async function handler(
       type: 'memory',
     },
   });
-  console.log('yay');
   try {
     await storyblok
       .getStory(storyblokReqData.story_id.toString())
       .then(res => {
-        const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
-        const mappedItem = mapStoryblokItem(res.data.story);
-        console.log(mappedItem);
-        index
-          .saveObject(mappedItem)
-          .wait()
-          .catch(e => console.log(e));
-        console.log('saved');
+        if (res.data.story.content?.component === 'page') {
+          const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
+          const mappedItem = mapStoryblokItem(res.data.story);
+          response.status(200).json(res.data.story);
+          index
+            .saveObject(mappedItem)
+            .wait()
+            .catch(e => console.log(e));
+          console.log('saved');
+        }
       })
       .catch(e => console.log(e));
   } catch (err) {
     console.error(err);
     response.status(400).json({});
   }
-  response.status(200).json({});
 }
