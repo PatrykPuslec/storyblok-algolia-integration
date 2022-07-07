@@ -26,6 +26,7 @@ export default function handler(
     .get(`cdn/stories/${storyblokReqData.story_id}`)
     .then(async res => {
       const mappedResponse = mapStoryblokItem(res.data.story);
+      console.log(storyblokReqData.action);
       if (storyblokReqData) {
         if (storyblokReqData.action === 'published') {
           console.log(mappedResponse);
