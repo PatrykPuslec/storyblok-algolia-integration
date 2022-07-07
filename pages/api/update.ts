@@ -28,7 +28,6 @@ export default function handler(
       const mappedResponse = mapStoryblokItem(res.data.story);
       console.log(mappedResponse);
       console.log('-------------');
-      console.log(storyblokReqData);
       await index
         .saveObject(mappedResponse)
         .wait()
