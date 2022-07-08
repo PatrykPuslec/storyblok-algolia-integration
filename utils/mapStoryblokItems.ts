@@ -13,7 +13,7 @@ export type mappedStoryblokItem = {
   searchableContent?: Array<string>;
 };
 
-const getTextFieldData = (item, searchableContent) => {
+const getTextFieldData = (item, searchableContent: string[]) => {
   if (item.text && typeof item.text === 'string') {
     searchableContent.push(item.text);
   }

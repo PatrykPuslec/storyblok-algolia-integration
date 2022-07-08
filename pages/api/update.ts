@@ -36,6 +36,7 @@ export default async function handler(
             .wait()
             .catch(e => console.log(e));
           console.log('saved');
+          console.log(mappedItem);
         }
       })
       .catch(e => console.log(e));
