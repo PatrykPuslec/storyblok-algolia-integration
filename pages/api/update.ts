@@ -19,10 +19,6 @@ export default async function handler(
   const algolia = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_ADMIN_TOKEN);
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
-    cache: {
-      clear: 'auto',
-      type: 'memory',
-    },
   });
   try {
     await storyblok
