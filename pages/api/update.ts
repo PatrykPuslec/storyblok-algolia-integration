@@ -15,24 +15,30 @@ export default async function handler(
   const ALGOLIA_INDEX_NAME = process.env.ALGOLIA_INDEX_NAME;
   const STORYBLOK_CONTENT_DELIVERY_API_TOKEN =
     process.env.STORYBLOK_CONTENT_DELIVERY_API_TOKEN;
+  const STORYBLOK_OUATH_TOKEN = process.env.STORYBLOK_OUATH_TOKEN;
 
   const algolia = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_ADMIN_TOKEN);
   const storyblok = new StoryblokClient({
     accessToken: STORYBLOK_CONTENT_DELIVERY_API_TOKEN,
+    oauthToken: STORYBLOK_OUATH_TOKEN,
   });
   try {
+    const schema = await storyblok.get('spaces/157824/components');
+
     await storyblok
-      .getStory(storyblokReqData.story_id.toString())
+      .getStory('158491339', { cv: Date.now() })
       .then(res => {
         if (res.data.story.content?.component === 'page') {
           const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
-          const mappedItem = mapStoryblokItem(res.data.story);
+          const mappedItem = mapStoryblokItem(
+            res.data.story,
+            schema.data.components
+          );
+          response.status(200).json(res.data.story);
           index
             .saveObject(mappedItem)
             .wait()
             .catch(e => console.log(e));
-          console.log('saved');
-          console.log(mappedItem);
         }
       })
       .catch(e => console.log(e));
@@ -40,5 +46,4 @@ export default async function handler(
     console.error(err);
     response.status(400).json({});
   }
-  response.status(200).json({});
 }
