@@ -26,7 +26,7 @@ export default async function handler(
     const schema = await storyblok.get('spaces/157824/components');
 
     await storyblok
-      .getStory('158491339', { cv: Date.now() })
+      .getStory(storyblokReqData.story_id.toString(), { cv: Date.now() })
       .then(res => {
         if (res.data.story.content?.component === 'page') {
           const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
