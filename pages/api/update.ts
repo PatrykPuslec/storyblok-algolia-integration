@@ -25,23 +25,16 @@ export default async function handler(
   try {
     const schema = await storyblok.get('spaces/157824/components');
 
-    await storyblok
-      .getStory(storyblokReqData.story_id.toString(), { cv: Date.now() })
-      .then(res => {
-        if (res.data.story.content?.component === 'page') {
-          const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
-          const mappedItem = mapStoryblokItem(
-            res.data.story,
-            schema.data.components
-          );
+    const story = await storyblok
+      .getStory('158491339', { cv: Date.now() })
+      .then(res => res.data.story);
 
-          index
-            .saveObject(mappedItem)
-            .wait()
-            .catch(e => console.log(e));
-        }
-      })
-      .catch(e => console.log(e));
+    if (story.content?.component === 'page') {
+      const index = algolia.initIndex(ALGOLIA_INDEX_NAME);
+      const mappedItem = mapStoryblokItem(story, schema.data.components);
+
+      await index.saveObject(mappedItem).wait();
+    }
   } catch (err) {
     console.error(err);
     response.status(400).json({});
