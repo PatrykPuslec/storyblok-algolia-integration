@@ -35,6 +35,7 @@ export default async function handler(
             schema.data.components
           );
           response.status(200).json(res.data.story);
+          console.log('saving algolia');
           index
             .saveObject(mappedItem)
             .wait()
