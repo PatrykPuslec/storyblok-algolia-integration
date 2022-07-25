@@ -34,8 +34,7 @@ export default async function handler(
             res.data.story,
             schema.data.components
           );
-          response.status(200).json(res.data.story);
-          console.log('saving algolia');
+
           index
             .saveObject(mappedItem)
             .wait()
@@ -47,4 +46,5 @@ export default async function handler(
     console.error(err);
     response.status(400).json({});
   }
+  response.status(200).json({});
 }
