@@ -26,7 +26,7 @@ export default async function handler(
     const schema = await storyblok.get('spaces/157824/components');
 
     const story = await storyblok
-      .getStory('158491339', { cv: Date.now() })
+      .getStory(storyblokReqData.story_id.toString(), { cv: Date.now() })
       .then(res => res.data.story);
 
     if (story.content?.component === 'page') {
